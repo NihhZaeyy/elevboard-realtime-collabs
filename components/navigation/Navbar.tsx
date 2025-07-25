@@ -60,7 +60,7 @@ const components: { title: string; href: string; description: string }[] = [
 
 const Navbar = () => {
   return (
-    <nav className="px-20 py-10 fixed top-0 right-0 w-full">
+    <nav className="px-20 py-10 fixed top-0 right-0 w-full z-30">
       <div className="flex justify-between items-center p-2 bg-white rounded-xl">
         <div className="flex gap-4 justify-center items-center">
           <div className="flex gap-1 justify-center items-center">
