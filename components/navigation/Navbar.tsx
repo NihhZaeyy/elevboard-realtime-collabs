@@ -2,12 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import {
-  CircleCheckIcon,
-  CircleHelpIcon,
-  CircleIcon,
-  ClipboardPenLine,
-} from "lucide-react";
+import { Book, CircleDollarSign, House, Menu, Wrench, X } from "lucide-react";
 
 import {
   NavigationMenu,
@@ -19,6 +14,10 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Button } from "../ui/button";
+
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import Logo from "../ui/elements/logo";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -58,18 +57,65 @@ const components: { title: string; href: string; description: string }[] = [
   },
 ];
 
+const miniNavbarComponent: {
+  title: string;
+  href: string;
+  icon: React.JSX.Element;
+}[] = [
+  {
+    title: "Home",
+    href: "/",
+    icon: <House strokeWidth={3} />,
+  },
+  {
+    title: "About",
+    href: "/about",
+    icon: <Book strokeWidth={3} />,
+  },
+  {
+    title: "Tools",
+    href: "/tools",
+    icon: <Wrench strokeWidth={3} />,
+  },
+  {
+    title: "Pricing",
+    href: "/pricing",
+    icon: <CircleDollarSign strokeWidth={3} />,
+  },
+];
+
 const Navbar = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const navbarToggle = () => {
+    setIsOpen((prev) => !prev);
+  };
+
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
   return (
-    <nav className="px-20 py-10 fixed top-0 right-0 w-full z-30">
-      <div className="flex justify-between items-center p-2 bg-white rounded-xl">
-        <div className="flex gap-4 justify-center items-center">
-          <div className="flex gap-1 justify-center items-center">
-            <div className="p-2 bg-[#FFDE63] rounded-lg">
-              <ClipboardPenLine strokeWidth={3} />
-            </div>
-            <span className="text-xl font-bold">ElevBoard</span>
+    <nav className="fixed top-0 right-0 w-full z-30">
+      <div className="mx-6 lg:mx-20 mt-10 flex justify-between items-center p-2 bg-white rounded-xl">
+        <div className="flex gap-4 justify-center items-center w-full lg:w-max">
+          {/* ================================================== first section ================================================== */}
+          <div className="flex items-center justify-between w-full lg:w-max">
+            <Link href={"/"}>
+              <Logo />
+            </Link>
+            <button
+              onClick={navbarToggle}
+              className="lg:hidden p-2 border border-muted-foreground/30 cursor-pointer rounded-xl"
+            >
+              <Menu />
+            </button>
           </div>
-          <NavigationMenu viewport={false}>
+
+          {/* ================================================== mid section ================================================== */}
+          <NavigationMenu viewport={false} className="hidden lg:block">
             <NavigationMenuList>
               <NavigationMenuItem>
                 <NavigationMenuTrigger>Home</NavigationMenuTrigger>
@@ -108,7 +154,7 @@ const Navbar = () => {
                 </NavigationMenuContent>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <NavigationMenuTrigger>Components</NavigationMenuTrigger>
+                <NavigationMenuTrigger>Tools</NavigationMenuTrigger>
                 <NavigationMenuContent>
                   <ul className="grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px]">
                     {components.map((component) => (
@@ -128,7 +174,7 @@ const Navbar = () => {
                   asChild
                   className={navigationMenuTriggerStyle()}
                 >
-                  <Link href="/docs">Docs</Link>
+                  <Link href="/docs">About</Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
               <NavigationMenuItem>
@@ -182,45 +228,62 @@ const Navbar = () => {
                   </ul>
                 </NavigationMenuContent>
               </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>With Icon</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[200px] gap-4">
-                    <li>
-                      <NavigationMenuLink asChild>
-                        <Link href="#" className="flex-row items-center gap-2">
-                          <CircleHelpIcon />
-                          Backlog
-                        </Link>
-                      </NavigationMenuLink>
-                      <NavigationMenuLink asChild>
-                        <Link href="#" className="flex-row items-center gap-2">
-                          <CircleIcon />
-                          To Do
-                        </Link>
-                      </NavigationMenuLink>
-                      <NavigationMenuLink asChild>
-                        <Link href="#" className="flex-row items-center gap-2">
-                          <CircleCheckIcon />
-                          Done
-                        </Link>
-                      </NavigationMenuLink>
-                    </li>
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
         </div>
-        <div className="flex gap-1 justify-center items-center">
-          <Link href={"/login"}>
-            <Button variant={"outline"}>Login</Button>
-          </Link>
-          <Link href={"/signup"}>
-            <Button variant={"blue"}>Sign up free</Button>
-          </Link>
+        {/* ================================================== auth section ================================================== */}
+        <div className="hidden lg:block">
+          <div className="flex gap-1 justify-center items-center">
+            <Link href={"/login"}>
+              <Button variant={"outline"}>Login</Button>
+            </Link>
+            <Link href={"/signup"}>
+              <Button variant={"blue"}>Sign up free</Button>
+            </Link>
+          </div>
         </div>
       </div>
+      {/* ================================================== open-able section ================================================== */}
+      {isOpen && (
+        <div className="w-full h-screen top-0 right-0 absolute px-6 z-40 bg-black/80 backdrop-blur-xl">
+          <div className="flex items-center justify-between mt-10  p-2 bg-white rounded-xl">
+            <Logo />
+            <button
+              onClick={navbarToggle}
+              className="p-2 border border-muted-foreground/30 cursor-pointer rounded-xl"
+            >
+              <X />
+            </button>
+          </div>
+          {miniNavbarComponent.map((item) => (
+            <div
+              key={item.title}
+              className="p-2 bg-white rounded-xl flex flex-col gap-6 mt-6"
+            >
+              <Link href={item.href}>
+                <div className="flex gap-2 items-center">
+                  <div className="p-2 bg-[#FFDE63] w-max rounded-lg">
+                    {item.icon}
+                  </div>
+                  <span className="text-xl">{item.title}</span>
+                </div>
+              </Link>
+            </div>
+          ))}
+          <div className="flex flex-col items-center justify-center gap-2 mt-8">
+            <Link className="w-full" href={"/login"}>
+              <Button className="rounded-lg w-full" variant={"secondary"}>
+                Login
+              </Button>
+            </Link>
+            <Link className="w-full" href={"/signup"}>
+              <Button className="rounded-lg w-full" variant={"blue"}>
+                Sign up free
+              </Button>
+            </Link>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
