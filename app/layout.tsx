@@ -3,6 +3,8 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navigation/Navbar";
 
+import { Toaster } from "@/components/ui/sonner";
+
 const poppins = Poppins({
   weight: ["400", "700"],
   variable: "--font-poppins",
@@ -24,6 +26,7 @@ export default function RootLayout({
       <body
         className={` ${poppins.variable} antialiased overflow-x-hidden relative`}
       >
+        <Toaster />
         <Navbar />
         {children}
       </body>
