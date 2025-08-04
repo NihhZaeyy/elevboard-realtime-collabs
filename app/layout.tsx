@@ -23,11 +23,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={` ${poppins.variable} antialiased overflow-x-hidden relative`}
-      >
+      <body className={` ${poppins.variable} antialiased overflow-x-hidden `}>
         <Toaster />
-        <Navbar />
+
         {children}
       </body>
     </html>
