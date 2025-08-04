@@ -1,19 +1,24 @@
-interface Values {
+interface registerValues {
   username: string;
   email: string;
   password: string;
   confirm: string;
 }
 
-interface SignupResponse {
+interface AuthResponse {
   success: boolean;
   data?: any;
   message: string;
 }
 
+interface LoginCredentialValues {
+  email: string;
+  password: string;
+}
+
 export async function signupCredential(
-  userData: Values
-): Promise<SignupResponse> {
+  userData: registerValues
+): Promise<AuthResponse> {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_AUTH_URL}/register/credential`,
@@ -48,6 +53,42 @@ export async function signupCredential(
       success: true,
       data: result,
       message: "Registration successful",
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error.message || "An unexpected error occurred",
+    };
+  }
+}
+
+export async function loginCredential(
+  userData: LoginCredentialValues
+): Promise<AuthResponse> {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_AUTH_URL}/login/credential`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+        signal: AbortSignal.timeout(10000),
+        credentials: "include",
+      }
+    );
+
+    const result = await response.json();
+    if (!response.ok) {
+      return {
+        success: false,
+        message: result.message || "Login failed",
+      };
+    }
+
+    return {
+      success: true,
+      data: result,
+      message: "Login successful",
     };
   } catch (error: any) {
     return {

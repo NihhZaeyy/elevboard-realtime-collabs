@@ -147,7 +147,7 @@ export function SignupForm({
                   <button
                     type="button"
                     className="absolute right-2 bottom-0 -translate-y-1/2"
-                    onClick={togglePassword}
+                    onClick={toggleConfirm}
                   >
                     {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -158,7 +158,7 @@ export function SignupForm({
               </div>
               <div className="text-center text-sm">
                 Already have an account?{" "}
-                <a href="#" className="underline underline-offset-4">
+                <a href="/login" className="underline underline-offset-4">
                   Login
                 </a>
               </div>
