@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -22,7 +23,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "sonner";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Loader2, Lock, Mail, MoveLeft } from "lucide-react";
 
 // form
 import { z } from "zod";
@@ -54,15 +55,23 @@ export function LoginForm({
     // window.location.href = `${process.env.NEXT_PUBLIC_API_AUTH_URL}/oauth/google`;
   };
 
+  const [isLoading, setIsLoading] = useState(false);
   async function onSubmit(values: z.infer<typeof credentialLoginSchema>) {
-    const res = await loginCredential(values);
+    setIsLoading(true);
+    try {
+      const res = await loginCredential(values);
 
-    if (!res.success) {
-      const errorMessage = `${res.message} 🔐` || "Something went wrong ❌";
-      toast.error(errorMessage);
-    } else {
-      toast.success("Login Successfully ✅");
-      router.push("/dashboard");
+      if (!res.success) {
+        const errorMessage = `${res.message} 🔐` || "Something went wrong ❌";
+        toast.error(errorMessage);
+      } else {
+        toast.success("Login Successfully ✅");
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      toast.error("Something went wrong ❌");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -124,7 +133,7 @@ export function LoginForm({
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
                 <div className="grid gap-6">
-                  <div className="grid gap-3">
+                  <div className="grid gap-3 relative">
                     <FormField
                       control={form.control}
                       name="email"
@@ -136,11 +145,17 @@ export function LoginForm({
                               placeholder="m@example.com"
                               type="email"
                               {...field}
+                              className="pl-10"
                             />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
+                    />
+                    <Mail
+                      className="absolute left-2 bottom-0 -translate-y-1/2"
+                      size={18}
+                      opacity={0.6}
                     />
                   </div>
                   <div className="grid gap-3 relative">
@@ -162,6 +177,7 @@ export function LoginForm({
                             <Input
                               type={showPassword ? "text" : "password"}
                               {...field}
+                              className="pl-10"
                             />
                           </FormControl>
                           <FormMessage />
@@ -175,19 +191,33 @@ export function LoginForm({
                     >
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
+                    <Lock
+                      className="absolute left-2 bottom-0 -translate-y-1/2"
+                      size={18}
+                      opacity={0.6}
+                    />
                   </div>
-                  <Button type="submit" className="w-full">
-                    Login
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    {isLoading ? "Logging in..." : "Login"}
                   </Button>
                 </div>
               </form>
             </Form>
+            <div className="flex justify-between items-center text-sm">
+              <Link href={"/"} className="flex gap-2 items-center">
+                <MoveLeft opacity={0.8} />
+                <span>Back</span>
+              </Link>
 
-            <div className="text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <a href="/signup" className="underline underline-offset-4">
-                Sign up
-              </a>
+              <div>
+                Don&apos;t have an account?{" "}
+                <a href="/signup" className="underline underline-offset-4">
+                  Sign up
+                </a>
+              </div>
             </div>
           </div>
         </CardContent>
