@@ -62,14 +62,13 @@ export function LoginForm({
       const res = await loginCredential(values);
 
       if (!res.success) {
-        const errorMessage = `${res.message} 🔐` || "Something went wrong ❌";
-        toast.error(errorMessage);
+        toast.error("Something went wrong ❌");
       } else {
         toast.success("Login Successfully ✅");
         router.push("/dashboard");
       }
     } catch (error) {
-      toast.error("Something went wrong ❌");
+      toast.warning("Something went wrong ❌");
     } finally {
       setIsLoading(false);
     }
@@ -141,21 +140,23 @@ export function LoginForm({
                         <FormItem>
                           <FormLabel>Email</FormLabel>
                           <FormControl>
-                            <Input
-                              placeholder="m@example.com"
-                              type="email"
-                              {...field}
-                              className="pl-10"
-                            />
+                            <div className="relative">
+                              <Mail
+                                className="absolute left-2 top-1/2 -translate-y-1/2"
+                                size={18}
+                                opacity={0.6}
+                              />
+                              <Input
+                                placeholder="john.doe@email.com"
+                                type="email"
+                                {...field}
+                                className="pl-10"
+                              />
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
-                    />
-                    <Mail
-                      className="absolute left-2 bottom-0 -translate-y-1/2"
-                      size={18}
-                      opacity={0.6}
                     />
                   </div>
                   <div className="grid gap-3 relative">
@@ -174,11 +175,18 @@ export function LoginForm({
                             </a>
                           </div>
                           <FormControl>
-                            <Input
-                              type={showPassword ? "text" : "password"}
-                              {...field}
-                              className="pl-10"
-                            />
+                            <div className="relative">
+                              <Input
+                                type={showPassword ? "text" : "password"}
+                                {...field}
+                                className="pl-10"
+                              />
+                              <Lock
+                                className="absolute left-2 top-1/2 -translate-y-1/2"
+                                size={18}
+                                opacity={0.6}
+                              />
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -191,11 +199,6 @@ export function LoginForm({
                     >
                       {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
-                    <Lock
-                      className="absolute left-2 bottom-0 -translate-y-1/2"
-                      size={18}
-                      opacity={0.6}
-                    />
                   </div>
                   <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading && (
